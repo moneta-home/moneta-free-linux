@@ -8,16 +8,16 @@ no account to create, no cloud, and it works with no internet connection.
 
 | Your machine | File |
 |---|---|
-| PC or laptop, Intel or AMD, 64-bit | `moneta-home_0.1.20260920-<build>_FREE_amd64.deb` |
-| Raspberry Pi, 64-bit Raspberry Pi OS | `moneta-home_0.1.20260920-<build>_FREE_arm64.deb` |
-| Raspberry Pi, 32-bit Raspberry Pi OS | `moneta-home_0.1.20260920-<build>_FREE_armhf.deb` |
+| PC or laptop, Intel or AMD, 64-bit | `moneta-home_0.1.20260920-<build>_FREE_LINUX_PC.deb` |
+| Raspberry Pi, 64-bit Raspberry Pi OS | `moneta-home_0.1.20260920-<build>_FREE_RASPBERRY_PI_64.deb` |
+| Raspberry Pi, 32-bit Raspberry Pi OS | `moneta-home_0.1.20260920-<build>_FREE_RASPBERRY_PI_32.deb` |
 
-Not sure? Ask the machine: `dpkg --print-architecture`.
+Not sure which Raspberry Pi OS you run? `dpkg --print-architecture` prints `arm64` for 64-bit and `armhf` for 32-bit.
 
 ## Install
 
 ```bash
-sudo apt install ./moneta-home_0.1.20260920-<build>_FREE_<arch>.deb
+sudo apt install ./moneta-home_0.1.20260920-<build>_FREE_<your machine>.deb
 ```
 
 Then open **Moneta Home** from your applications menu, or run `moneta-home`.
@@ -35,8 +35,8 @@ AI help.
 
 ## What you need
 
-* Ubuntu 24.04 or later, or Debian 12 or later (amd64)
-* Raspberry Pi OS 13 (trixie), 32-bit, for the armhf package
+* Ubuntu 24.04 or later, or Debian 12 or later, on a PC
+* Raspberry Pi OS 12 (bookworm) or later, 32-bit or 64-bit
 * A desktop install — this is a desktop application
 * About 300 MB of disk space
 

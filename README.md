@@ -14,46 +14,63 @@ Chat with us on [Discord](https://discord.gg/QesugQzTp).
 ## Download
 
 Take the newest package from [Releases](../../releases), **matching your
-machine's processor**:
+machine**:
 
 | Your machine | File |
 |---|---|
-| A PC or laptop (Intel or AMD, 64-bit) | `moneta-home_<version>_FREE_amd64.deb` |
-| Raspberry Pi running 32-bit Raspberry Pi OS | `moneta-home_<version>_FREE_armhf.deb` |
+| A PC or laptop (Intel or AMD, 64-bit) | `moneta-home_<version>_FREE_LINUX_PC.deb` |
+| Raspberry Pi, 64-bit Raspberry Pi OS | `moneta-home_<version>_FREE_RASPBERRY_PI_64.deb` |
+| Raspberry Pi, 32-bit Raspberry Pi OS | `moneta-home_<version>_FREE_RASPBERRY_PI_32.deb` |
 
-Not sure which you have? Ask the machine:
+Not sure which Raspberry Pi OS you run? Ask the machine:
 
 ```bash
 dpkg --print-architecture
 ```
 
+`arm64` means 64-bit, `armhf` means 32-bit. (On a PC it prints `amd64`.)
+
 🔴 **The files are not interchangeable.** A program is compiled for one kind of
 processor: the PC package cannot run on a Raspberry Pi, and `apt` will refuse it
 rather than install something that could not start.
 
-⚠️ **64-bit Raspberry Pi OS (`arm64`) is not covered yet** — it needs its own
-build, on a 64-bit machine. Watch [Releases](../../releases).
-
 ## Install
 
+**From a terminal** — on a Raspberry Pi with no screen of its own, this is the
+whole job. Take the file name and the tag from
+[Releases](../../releases):
+
 ```bash
-sudo apt install ./moneta-home_<version>_FREE_<arch>.deb
+wget https://github.com/moneta-home/moneta-free-linux/releases/download/<tag>/moneta-home_<version>_FREE_<your machine>.deb
+```
+
+Check it is the file we published (`SHA256SUMS` is in the same release):
+
+```bash
+wget https://github.com/moneta-home/moneta-free-linux/releases/download/<tag>/SHA256SUMS
+sha256sum --ignore-missing -c SHA256SUMS
+```
+
+`--ignore-missing` matters: the file lists all three packages, and without it
+the two you did not download are reported as failures.
+
+Install it:
+
+```bash
+sudo apt install ./moneta-home_<version>_FREE_<your machine>.deb
 ```
 
 `apt` installs the few system libraries the window needs (GTK 3 and WebKitGTK),
 which a desktop install usually has already. Then open **Moneta Home** from your
 applications menu, or run `moneta-home`.
 
-Verify a download first if you wish — each release lists the SHA-256 of its files:
-
-```bash
-sha256sum moneta-home_<version>_FREE_<arch>.deb
-```
+**From a browser**, download the package from the release page and either
+double-click it or run the same `apt install` line in its folder.
 
 ## What you need
 
-* **PC (amd64):** Ubuntu 24.04 or later, or Debian 12 or later.
-* **Raspberry Pi (armhf):** Raspberry Pi OS 13 (trixie), 32-bit.
+* **PC:** Ubuntu 24.04 or later, or Debian 12 or later.
+* **Raspberry Pi:** Raspberry Pi OS 12 (bookworm) or later, 32-bit or 64-bit.
 * A **desktop** install in either case — this is a desktop application, not a
   service (see "Opening it from another computer").
 * About 300 MB of disk space.
@@ -140,6 +157,9 @@ read it after each restart:
 ```bash
 grep "open:" ~/.local/share/moneta-home/moneta.log | tail -1
 ```
+
+📌 The log always sits **beside your data**, so if you moved the data folder,
+look there instead — `moneta-home --diagnose` prints the path it is using.
 
 ### After a restart
 
