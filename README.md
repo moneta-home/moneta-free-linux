@@ -107,22 +107,43 @@ MONETA_NO_WINDOW=1 MONETA_PORT=3470 MONETA_BIND=0.0.0.0 moneta-home
 
 The app then answers at `http://<that machine>:3470`, and the log says so.
 
-🔴 **Read this before using `MONETA_BIND`.** Moneta Home has no password: on
-your own computer the lock is your login session. Once the app answers on the
-network, **the per-launch key is the only thing refusing anybody** — every
-device on that network can reach the door, including a guest's phone or
-anything on it that has been compromised. It is plain HTTP, so the session
-cookie travels unencrypted and can be read on the way. Never forward this port
-on a router, and prefer the SSH tunnel above when you can.
+🔴 **A machine that answers the network must have a password first, and the app
+refuses to start without one.** On your own computer there is none: the lock is
+your login session, and the app opens straight in. The moment it answers other
+machines that is no longer true, so before using `MONETA_BIND` run:
 
-The app prints the warning and the address at every start:
+```bash
+moneta-home --set-password
+```
+
+It asks twice, needs at least 10 characters, and sets the password of the
+account **`owner`** — the one account this install has. From a browser on
+another computer you sign in with `owner` and that password. **There is no
+default password**, and none is printed anywhere: a password published in a
+README is a door every installation in the world shares.
+
+If you skip this, the app stops at the start and tells you the line to run —
+it will not serve your records to a network with no password on them.
+
+⚠️ **What a password does not fix.** This is plain HTTP, so the session cookie
+travels unencrypted and can be read on the way; every device on that network can
+reach the door, including a guest's phone. Never forward this port on a router,
+and prefer the SSH tunnel below when you can.
+
+The app prints the address and the warning at every start:
 
 ```
   serving http://127.0.0.1:3470/app
   🔴 REACHABLE ON THE NETWORK (MONETA_BIND=0.0.0.0).
-     Anyone who can reach this machine can reach the app, and the
-     per-launch key below is the ONLY thing that refuses them.
+     Anyone who can reach this machine can reach the sign-in
+     page, and this launch's key opens it without signing in.
+     This is plain HTTP: the session cookie travels unencrypted.
+     on this network: http://192.168.1.24:3470
 ```
+
+The last line is the address to open on another computer. (The first line names
+the loopback address because that is what the app's own window talks to, even
+when it is listening on every interface.)
 
 ### Starting it automatically
 
@@ -151,22 +172,18 @@ sudo loginctl enable-linger $USER      # so it starts without you logging in
 
 Add `Environment=MONETA_BIND=0.0.0.0` only if you accepted the warning above.
 
-The address still changes in one respect: **the key is new at every start**, so
-read it after each restart:
+Nothing changes after a restart: the port is the one you set, and you sign in
+as `owner` with the password you chose. **You do not have to look up a new key
+each time** — that per-launch key is for the app's own window, on the machine
+itself.
 
-```bash
-grep "open:" ~/.local/share/moneta-home/moneta.log | tail -1
-```
-
-📌 The log always sits **beside your data**, so if you moved the data folder,
-look there instead — `moneta-home --diagnose` prints the path it is using.
+📌 The log sits **beside your data**, so if you moved the data folder, look
+there instead — `moneta-home --diagnose` prints the path it is using.
 
 ### After a restart
 
 Your installation and your data survive a reboot, and with the service above the
-app comes back by itself. **The key does not**: a new one is minted at every
-start, so read it again after each restart with the `grep` line above. The port
-stays whatever you set.
+app comes back by itself, on the same port, with the same password.
 
 📌 **If you would rather not put the app on your network at all**, leave
 `MONETA_BIND` unset and forward the port over SSH from the other computer
@@ -176,7 +193,7 @@ the app, and nothing is exposed.
 
 ## What the free edition does
 
-Current accounts and savings accounts, as many as you like, with transactions,
+One current account and two savings accounts, with transactions,
 recurring entries, categories, budgets, goals, the forecast, the dashboard and
 reports, in your own currency.
 
